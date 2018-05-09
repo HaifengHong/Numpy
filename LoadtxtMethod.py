@@ -30,8 +30,8 @@
 
 
 '''
-Let's find the average heights of the male and female students.
-The columns we need are the second and fourth, and there's no missing data in these columns so we can use np.loadtxt.
+    Let's find the average heights of the male and female students.
+    The columns we need are the second and fourth, and there's no missing data in these columns so we can use np.loadtxt.
 '''
 
 # -*- coding: utf-8 -*-
@@ -43,35 +43,35 @@ dtype1 = np.dtype([('gender', '|S1'), ('height', 'f8')]) # 自定义数据类型
 a = np.loadtxt(fname, dtype=dtype1, skiprows=9, usecols=(1, 3)) # [(b'M', 1.826) (b'M', 1.77) …… (b'F', 1.3) (b'M', 1.69)]
 print(a.dtype) # [('gender', 'S1'), ('height', '<f8')]  # byteorder '=':native   '<':little-endian小字节序/低字节序   '>':big-endian大字节序/高字节序 '|':not applicable
 '''
-The |S1 and |S2 strings are data type descriptors; the first means the array holds strings of length 1, the second of length 2.
-The | pipe symbol is the byteorder flag; in this case there is no byte order flag needed, so it's set to |, meaning not applicable.
-So '|S1' means a string of length 1.
+    The |S1 and |S2 strings are data type descriptors; the first means the array holds strings of length 1, the second of length 2.
+    The | pipe symbol is the byteorder flag; in this case there is no byte order flag needed, so it's set to |, meaning not applicable.
+    So '|S1' means a string of length 1.
 '''
 '''
-To find the average heights of the male students, 
-we only want to index the records with the gender field as M, for which we can create a boolean array.
+    To find the average heights of the male students, 
+    we only want to index the records with the gender field as M, for which we can create a boolean array.
 '''
 m = a['gender'] == b'M'
 print(m) # [ True  True False  True …… True False False  True]
 print(m.dtype) # bool
 '''
-m has entries that are True or False for each of the 19 valid records (one is commented out) according to whether the student is male or female.
-So the heights of the male and female students can be seen to be:
+    m has entries that are True or False for each of the 19 valid records (one is commented out) according to whether the student is male or female.
+    So the heights of the male and female students can be seen to be:
 '''
 Lm = a['height'][m] # [1.82 1.77 1.72 1.72 1.83 1.63 1.67 1.66 1.97 1.69]
 Lf = a['height'][~m] # [1.68 1.78 1.6  1.56 1.64 1.59 1.7  1.66 1.63]
 '''
-Therefore, the averages we need are:
+    Therefore, the averages we need are:
 '''
 m_hav = Lm.mean() # 1.748
 f_hav = Lf.mean() # 1.6488888888888888
 print('Male Average Height:{:.2f} m, Female Average Height:{:.2f} m.'.format(m_hav, f_hav)) # Male Average:1.75 m, Female Average:1.65 m.
 
 '''
-To perform the same analysis on the student weights we have a bit more work to do because there are some missing values (denoted by '-'). 
-We could use np.genfromtxt (see Section 6.2.3 of the book), but let's write a converter method instead. 
-We'll replace the missing values with the nicely unphysical value of -99. 
-The function parse_weight expects a string argument and returns a float:
+    To perform the same analysis on the student weights we have a bit more work to do because there are some missing values (denoted by '-'). 
+    We could use np.genfromtxt (see Section 6.2.3 of the book), but let's write a converter method instead. 
+    We'll replace the missing values with the nicely unphysical value of -99. 
+    The function parse_weight expects a string argument and returns a float:
 '''
 dtype2 = np.dtype([('gender', '|S1'), ('weight', 'f8')])
 def parse_weight(s):
@@ -80,7 +80,7 @@ def parse_weight(s):
     except ValueError:
         return -99
 '''
-This is the function we want to pass as a converter for column 4:
+    This is the function we want to pass as a converter for column 4:
 '''
 b = np.loadtxt(fname, dtype=dtype2, skiprows=9, usecols=(1, 4), converters={4:parse_weight}) # 注意parse_weight后没有()，只有函数名
 mv = b['weight'] > 0 # elements only True for valid data （将'-'表示的missing数据剔除掉）
